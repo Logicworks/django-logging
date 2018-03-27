@@ -96,20 +96,20 @@ class ConsoleHandler(StreamHandler):
         if isinstance(record.msg, LogObject) or isinstance(record.msg, SqlLogObject):
             created = int(record.created)
             message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): record.msg.to_dict}}
-
-            try:
-                indent = int(settings.INDENT_CONSOLE_LOG)
-            except (ValueError, TypeError):
-                indent = 1
-            import pprint
-            message = pprint.pformat(message, indent, 160, compact=True)
+            if settings.INDENT_CONSOLE_LOG:
+                try:
+                    indent = int(settings.INDENT_CONSOLE_LOG)
+                except (ValueError, TypeError):
+                    indent = 1
+                import pprint
+                message = pprint.pformat(message, indent, 160, compact=True)
             return message
         elif isinstance(record.msg, ErrorLogObject):
             return str(record.msg)
         elif isinstance(record.msg, dict):
             created = int(record.created)
             message = {record.levelname: {created: record.msg}}
-            return json.dumps(message, sort_keys=True, indent=2)
+            return json.dumps(message, sort_keys=True, indent=settings.INDENT_CONSOLE_LOG)
         else:
             return super(ConsoleHandler, self).format(record)
 
