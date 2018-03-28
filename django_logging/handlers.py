@@ -100,7 +100,7 @@ class ConsoleHandler(StreamHandler):
         if isinstance(record.msg, LogObject) or isinstance(record.msg, SqlLogObject):
             created = int(record.created)
             message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): record.msg.to_dict}}
-            if indent:
+            if indent is not None:
                 import pprint
                 return pprint.pformat(message, indent, 160, compact=True)
             else:
