@@ -94,7 +94,7 @@ class ConsoleHandler(StreamHandler):
 
     def format(self, record):
         try:
-            indent = int(settings.INDENT_CONSOLE_LOG)
+            indent = int(settings.INDENT_CONSOLE_LOG) if int(settings.INDENT_CONSOLE_LOG) else None
         except (ValueError, TypeError):
             indent = 1
         if isinstance(record.msg, LogObject) or isinstance(record.msg, SqlLogObject):
