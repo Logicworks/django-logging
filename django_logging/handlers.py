@@ -111,6 +111,10 @@ class ConsoleHandler(StreamHandler):
             created = int(record.created)
             message = {record.levelname: {created: record.msg}}
             return json.dumps(message, sort_keys=True, indent=indent)
+        elif isinstance(record.msg, str):
+            created = int(record.created)
+            message = {record.levelname: {created: {'message': record.msg}}}
+            return json.dumps(message, sort_keys=True, indent=indent)
         else:
             return super(ConsoleHandler, self).format(record)
 
