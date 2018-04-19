@@ -14,6 +14,7 @@ class DjangoLoggingSettings(object):
             SQL_THRESHOLD=0.5,
             LOG_LEVEL='debug' if django_settings.DEBUG else 'info',
             DISABLE_EXISTING_LOGGERS=True,
+            FLATTEN_LOG_OUTPUT=False,
             IGNORED_PATHS=['/admin', '/static', '/favicon.ico'],
             RESPONSE_FIELDS=('status', 'reason', 'charset', 'headers', 'content'),
             CONTENT_JSON_ONLY=True,

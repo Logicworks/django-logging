@@ -99,7 +99,14 @@ class ConsoleHandler(StreamHandler):
             indent = 1
         if isinstance(record.msg, LogObject) or isinstance(record.msg, SqlLogObject):
             created = int(record.created)
-            message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): record.msg.to_dict}}
+            if settings.FLATTEN_LOG_OUTPUT:
+                message = {
+                    "log_level": record.levelname,
+                    "timestamp": datetime.datetime.fromtimestamp(created).isoformat(),
+                    "message": record.msg.to_dict
+                }
+            else:
+                message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): record.msg.to_dict}}
             if indent is not None:
                 import pprint
                 return pprint.pformat(message, indent, 160, compact=True)
@@ -109,11 +116,25 @@ class ConsoleHandler(StreamHandler):
             return str(record.msg)
         elif isinstance(record.msg, dict):
             created = int(record.created)
-            message = {record.levelname: {created: record.msg}}
+            if settings.FLATTEN_LOG_OUTPUT:
+                message = {
+                    "log_level": record.levelname,
+                    "timestamp": created,
+                    "message": record.msg
+                }
+            else:
+                message = {record.levelname: {created: record.msg}}
             return json.dumps(message, sort_keys=True, indent=indent)
         elif isinstance(record.msg, str):
             created = int(record.created)
-            message = {record.levelname: {created: {'message': record.msg}}}
+            if settings.FLATTEN_LOG_OUTPUT:
+                message = {
+                    "log_level": record.levelname,
+                    "timestamp": created,
+                    "message": record.msg
+                }
+            else:
+                message = {record.levelname: {created: {'message': record.msg}}}
             return json.dumps(message, sort_keys=True, indent=indent)
         else:
             return super(ConsoleHandler, self).format(record)
