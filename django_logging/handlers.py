@@ -119,22 +119,22 @@ class ConsoleHandler(StreamHandler):
             if settings.FLATTEN_LOG_OUTPUT:
                 message = {
                     "log_level": record.levelname,
-                    "timestamp": created,
+                    "timestamp": datetime.datetime.fromtimestamp(created).isoformat(),
                     "message": record.msg
                 }
             else:
-                message = {record.levelname: {created: record.msg}}
+                message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): record.msg}}
             return json.dumps(message, sort_keys=True, indent=indent)
         elif isinstance(record.msg, str):
             created = int(record.created)
             if settings.FLATTEN_LOG_OUTPUT:
                 message = {
                     "log_level": record.levelname,
-                    "timestamp": created,
+                    "timestamp": datetime.datetime.fromtimestamp(created).isoformat(),
                     "message": record.msg
                 }
             else:
-                message = {record.levelname: {created: {'message': record.msg}}}
+                message = {record.levelname: {datetime.datetime.fromtimestamp(created).isoformat(): {'message': record.msg}}}
             return json.dumps(message, sort_keys=True, indent=indent)
         else:
             return super(ConsoleHandler, self).format(record)
